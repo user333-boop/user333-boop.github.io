@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My first Vue app</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.3.45/css/materialdesignicons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- BUEFY -->
+    <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+</head>
+<body>
+    <div id="app">
+        <div class="section">
+            <div class="container box">
+                <div>
+                    <b-field>
+                        <b-input placeholder="Search move..."
+                            v-model="moveNameFilter"
+                            type="search"
+                            icon="magnify"
+                            icon-clickable
+                            @icon-click="">
+                        </b-input>
+                    </b-field>
+                </div>
+                <div class="">
+                    <div class="">
+                        <b-field label = "Source Type">
+                            <b-checkbox v-model="sourceTypeFilter"
+                                native-value="Discipline" :class="field">
+                                Discipline
+                            </b-checkbox>
+                            <b-checkbox v-model="sourceTypeFilter"
+                                native-value="Instincts">
+                                Instincts
+                            </b-checkbox>
+                        </div>
+                    </b-field>
+                    <b-field label = "Level">
+                        <b-checkbox v-model="levelFilter"
+                                native-value="1">
+                                Level 1
+                        </b-checkbox>
+                        <b-checkbox v-model="levelFilter"
+                                native-value="2">
+                                Level 2
+                        </b-checkbox>
+                        <b-checkbox v-model="levelFilter"
+                                native-value="3">
+                                Level 3
+                        </b-checkbox>
+                        <b-checkbox v-model="levelFilter"
+                                native-value="4">
+                                Level 4
+                        </b-checkbox>
+                        <b-checkbox v-model="levelFilter"
+                                native-value="5">
+                                Level 5
+                        </b-checkbox>
+                    </b-field>
+                </div>
+            </div>
+        </div>
+        <div class="" >
+            <div class="container">
+                <b-collapse class="card" animation="slide" v-for="sourceType in sourceTypes" :key="sourceType.name" :open=false>
+                    <div
+                        slot="trigger" 
+                        slot-scope="props"
+                        class="card-header"
+                        role="button">
+                        <p class="card-header-title">
+                            <span class="title is-size-1">{{sourceType.name}}</span>
+                        </p>
+                        <a class="card-header-icon">
+                            <b-icon
+                                :icon="props.open ? 'menu-down' : 'menu-up'">
+                            </b-icon>
+                        </a>
+                    </div>
+                    <div class="card-content">
+                        <div class="content">
+                        <h2 class="title">Sources</h2>
+                            <b-collapse class="card" animation="slide" v-for="source in sourceType.sources" :key="source.name" :open=false>
+                                    <div
+                                        slot="trigger" 
+                                        slot-scope="props"
+                                        class="card-header"
+                                        role="button">
+                                        <h3 class="card-header-title">
+                                            {{source.name}}
+                                        </h3>
+                                        <a class="card-header-icon">
+                                            <b-icon
+                                                :icon="props.open ? 'menu-down' : 'menu-up'">
+                                            </b-icon>
+                                        </a>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="content">
+                                            <h4 class="title">Skills</h4>
+                                            <b-collapse class="card" animation="slide" v-for="move in source.moves" :key="move.name" :open=false>
+                                                <div
+                                                    slot="trigger" 
+                                                    slot-scope="props"
+                                                    class="card-header"
+                                                    role="button">
+                                                    <p class="card-header-title">
+                                                        {{move.name}} 🞄<span class="has-text-grey">&nbsp Level {{ move.level }}</span>
+                                                    </p>
+                                                    <a class="card-header-icon">
+                                                        <b-icon
+                                                            :icon="props.open ? 'menu-down' : 'menu-up'">
+                                                        </b-icon>
+                                                    </a>
+                                                </div>
+                                                <div class="card-content">
+                                                    <div class="content">
+                                                        {{move.description}}
+                                                        <br> <b>Level: </b> {{move.level}}
+                                                    </div>
+                                                </div>
+                                            </b-collapse>
+                                        </div>
+                                    </div>
+                                </b-collapse>
+                        </div>
+                    </div>
+                </b-collapse>
+            </div>
+        </div>
+    </div>
+
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        message: 'Hello Vue!',
+        sourceTypes: null,
+        
+        sourceTypeFilter: [],
+        levelFilter: [],
+        moveNameFilter: null,
+      },
+      beforeMount: function() {
+        this.fetchData();
+      },
+
+      methods: {
+        fetchData: function() {
+            var self = this;
+            self.sourceTypes = JSON.parse(`
+               [
+                    {
+                        "name" : "Discipline",
+                        "sources" :
+                            [ 
+                                {
+                                    "name" : "CONSISTING OF ONLY A HEAD - CONCUSSIVE STRIKES",
+                                    "moves" : [
+                                        {
+                                            "name": "Clobber",
+                                            "level" : 1,
+                                            "description" : "By taking a Bonus Action that ends their turn, a character can make their next attack disorient a target. This target will have their movement reduced, their decision-making hampered, and will have -5 to hit."
+                                        },
+                                        {
+                                            "name": "Hornet Blow",
+                                            "level" : 2,
+                                            "description" : "Thanks in large part to their hit-and-run tactics, the character’s melee attack now counts as ranged, as long as they return to their original point. Attacks of opportunity do not trigger when the character moves in and out of the target’s range (but can trigger if they pass by other Pokemon)."
+                                        },
+                                        {
+                                            "name" : "Pinger",
+                                            "level" : 3,
+                                            "description" : "The character makes a massive call-out at multiple enemies. Their next turn, they may attack and disorient as many foes as their movement allows. Due to the reckless nature of the move, each subsequent use will have a third of the movement allowed."
+                                        },
+                                        {
+                                            "name" : "Grand Concussion",
+                                            "level" : 4,
+                                            "description" : "An intensified Clobber. Within half their movement range, the character can select a spot. They will then ‘meteor’ this place, doing damage to enemies in a ten feet radius and inflicting concussed. Concussed targets use their turn to walk slowly in a random direction."
+                                        },
+                                        {
+                                            "name" : "Jolt Back",
+                                            "level" : 5,
+                                            "description" : "Once per round of combat, the character can meet an attack head-on, attacking at the oncoming damage and reducing it."
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name" : "QUADRUPEDS - PLAYFUL PAWS",
+                                    "moves" : [
+                                        {
+                                            "name": "Skip",
+                                            "level" : 1,
+                                            "description" : "Using a bonus action, the character begins a skipping routine that will enable them to move out of the way of attacks. Successful attacks are dodged anyway if they failed an accuracy (75%) check."
+                                        },
+                                        {
+                                            "name": "Batter and Swipe",
+                                            "level" : 2,
+                                            "description" : "While skipping, the character makes two attacks that have to pass an accuracy (70%) check. It is possible to abstain from attempting a Batter and Swipe."
+                                        },
+                                        {
+                                            "name": "Let-Me-Play",
+                                            "level" : 3,
+                                            "description" : "Attack of Opportunity now triggers whenever an enemy Pokemon in melee range takes an action that is not directly targeting the character. This AOO has a -3 to hit. Can only happen against one enemy per round of combat."
+                                        },
+                                        {
+                                            "name": "Gymnastics",
+                                            "level" : 4,
+                                            "description" : "The character dodges with incomprehensible flourish! The next attack against them in the same turn must pass an accuracy (60%) check."
+                                        },
+                                        {
+                                            "name": "Oops!",
+                                            "level" : 5,
+                                            "description" : "Upon an enemy missing due to skip (or any other factor), the character can redirect that attack onto a nearby enemy."
+                                        }
+                                    ]
+                                }
+                            ]
+                    },
+                    {
+                        "name" : "Instincts",
+                        "sources":
+                            [
+                                {
+                                    "name": "Docility",
+                                    "moves" : [
+                                        {
+                                            "name": "Dungeon Navigator",
+                                            "level" : 1,
+                                            "description" : "This character’s instincts still carry the untold amount of time before they—or whatever they were composed of—walked the halls of dungeons. They are completely immune to traps in Dungeons. Even traps outside of dungeons have a harder time capturing them (advantages to all saving throws against traps). "
+                                        },
+                                        {
+                                            "name": "Pack Mentality",
+                                            "level" : 2,
+                                            "description" : "This character receives bonuses when an enemy is surrounded."
+                                        },
+                                        {
+                                            "name" : "Move Genius",
+                                            "level" : 3,
+                                            "description" : "Dociles have a +3 to hit, and an extra dice roll of damage on all moves used on dungeon Pokemon."
+                                        },
+                                        {
+                                            "name" : "Pickup Omega",
+                                            "level" : 5,
+                                            "description" : "An intensified Clobber. Within half their movement range, the character can select a spot. They will then ‘meteor’ this place, doing damage to enemies in a ten feet radius and inflicting concussed. Concussed targets use their turn to walk slowly in a random direction."
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "UNKNOWN",
+                                    "moves" : [
+                                        {
+                                            "name": "War Machine",
+                                            "level" : 1,
+                                            "description" : "Once every three turns, this character can enrage, using both a move and an attack on the same turn."
+                                        },
+                                        {
+                                            "name": "Gridlock",
+                                            "level" : 2,
+                                            "description" : "All attacks of opportunity allow the character to use a move instead."
+                                        }
+                                    ]
+                                }
+                            ]
+                    }
+                ]
+            `);
+          }
+      
+        },
+        filterMoves: function() {
+            var sourceTypes = this.sourceTypes;
+            /*filteredSourceTye = sourceTypes.filter(function (sourceType) {
+                return 
+            })*/
+        }
+    })
+  </script>
+</body>
+</html>
